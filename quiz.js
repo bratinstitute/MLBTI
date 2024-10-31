@@ -1,19 +1,40 @@
 let answerPath = [];
 
 function nextQuestion(currentId, nextId) {
+  // Hide the current question
   document.getElementById(currentId).classList.remove('active');
-  
+
+  // Add the current question to answerPath before navigating
+  if (!nextId.startsWith("team-")) {
+    answerPath.push(currentId);
+  }
+
   // Check if nextId is a final result (starts with 'team-')
   if (nextId.startsWith('team-')) {
     showFinalResult(nextId);
   } else {
     // Normal navigation to the next question
     const nextElement = document.getElementById(nextId);
-    answerPath.push(nextId);
-    
     if (nextElement) {
       nextElement.classList.add('active');
     }
+  }
+}
+
+function goBack() {
+  // Retrieve the last question from the path
+  const lastQuestionId = answerPath.pop();
+
+  // Hide the current question (the one that's active)
+  const currentActive = document.querySelector(".question.active");
+  if (currentActive) {
+    currentActive.classList.remove("active");
+  }
+
+  // Show the previous question
+  const previousQuestion = document.getElementById(lastQuestionId);
+  if (previousQuestion) {
+    previousQuestion.classList.add("active");
   }
 }
 
@@ -50,10 +71,16 @@ function showFinalResult(teamId) {
     "team-brewers": "Milwaukee Brewers",
     "team-pirates": "Pittsburgh Pirates",
     "team-royals": "Kansas City Royals",
-    // Add more mappings as needed for each team result
   };
-
-  // Display the final result
-  document.getElementById("final-result").classList.add("active");
+  
+  // Set the final result text based on the teamId
   document.getElementById("team-result").innerText = teamMappings[teamId] || "Unknown Team";
+
+  // Ensure final-result is displayed
+  const finalResultElement = document.getElementById("final-result");
+  finalResultElement.classList.add("active");
+  finalResultElement.style.display = "block"; // JavaScript fallback for visibility
+
+  // Clear answerPath so they can't go back from the final result
+  answerPath = [];
 }
