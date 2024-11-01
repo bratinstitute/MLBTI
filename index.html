@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MLB Personality Quiz</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     .question { display: none; }
     .active { display: block; }
   </style>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="quiz-container">
@@ -217,9 +217,20 @@
     <!-- Example of a final result -->
     <div id="final-result" class="question">
       <p>Your personality type is <span id="team-result"></span>!</p>
+      <input type="email" id="user-email" placeholder="Enter your email" required>
+      <button id="emailButton">Email My Results</button>
     </div>
-
-    <script src="quiz.js"></script>
   </div>
+
+  <!-- Place the updated EmailJS script before the closing </body> tag -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+     (function() {
+        emailjs.init({
+          publicKey: "vX1KWHa4CDQe_DFEW",
+        });
+     })();
+  </script>
+  <script src="quiz.js"></script>
 </body>
 </html>

@@ -1,19 +1,13 @@
 let answerPath = [];
 
 function nextQuestion(currentId, nextId) {
-  // Hide the current question
   document.getElementById(currentId).classList.remove('active');
-
-  // Add the current question to answerPath before navigating
   if (!nextId.startsWith("team-")) {
     answerPath.push(currentId);
   }
-
-  // Check if nextId is a final result (starts with 'team-')
   if (nextId.startsWith('team-')) {
     showFinalResult(nextId);
   } else {
-    // Normal navigation to the next question
     const nextElement = document.getElementById(nextId);
     if (nextElement) {
       nextElement.classList.add('active');
@@ -22,16 +16,11 @@ function nextQuestion(currentId, nextId) {
 }
 
 function goBack() {
-  // Retrieve the last question from the path
   const lastQuestionId = answerPath.pop();
-
-  // Hide the current question (the one that's active)
   const currentActive = document.querySelector(".question.active");
   if (currentActive) {
     currentActive.classList.remove("active");
   }
-
-  // Show the previous question
   const previousQuestion = document.getElementById(lastQuestionId);
   if (previousQuestion) {
     previousQuestion.classList.add("active");
@@ -39,7 +28,6 @@ function goBack() {
 }
 
 function showFinalResult(teamId) {
-  // Map final result IDs to team names
   const teamMappings = {
     "team-diamondbacks": "AZ, which makes your team the Arizona Diamondbacks",
     "team-mariners": "SEA, which makes your team the Seattle Mariners",
@@ -72,15 +60,29 @@ function showFinalResult(teamId) {
     "team-pirates": "PIT, which makes your team the Pittsburgh Pirates",
     "team-royals": "KC, which makes your team the Kansas City Royals",
   };
-  
-  // Set the final result text based on the teamId
-  document.getElementById("team-result").innerText = teamMappings[teamId] || "Unknown Team";
 
-  // Ensure final-result is displayed
+  document.getElementById("team-result").innerText = teamMappings[teamId] || "Unknown Team";
   const finalResultElement = document.getElementById("final-result");
   finalResultElement.classList.add("active");
-  finalResultElement.style.display = "block"; // JavaScript fallback for visibility
+  finalResultElement.style.display = "block";
 
-  // Clear answerPath so they can't go back from the final result
   answerPath = [];
+
+  // EmailJS integration
+  document.getElementById("emailButton").addEventListener("click", function() {
+    emailjs.send("service_aw271mi", "template_bl4b8g7", {
+      personality_type: teamMappings[teamId].split(",")[0],
+      team_result: teamMappings[teamId],
+      user_email: document.getElementById("user-email").value
+    }).then(function(response) {
+      console.log("SUCCESS!", response.status, response.text);
+      alert("Results emailed successfully!");
+    }, function(error) {
+      console.log("FAILED...", error);
+      alert("Failed to send email. Please try again.");
+    });
+  });
 }
+
+// Initialize EmailJS (make sure you add your actual Public Key)
+emailjs.init("vX1KWHa4CDQe_DFEW");
